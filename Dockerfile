@@ -1,11 +1,22 @@
-FROM openjdk:22-jdk
+# Build stage
+FROM maven:3.9.9-eclipse-temurin-21 AS build
 
 WORKDIR /app
 
-COPY target/docker-template.jar docker-template.jar
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn clean package -DskipTests
+
+# Run stage
+FROM eclipse-temurin:21-jdk
+
+WORKDIR /app
+
+COPY --from=build /app/target/docker-template.jar app.jar
 
 ENV SPRING_PROFILES_ACTIVE=docker
 
-ENTRYPOINT ["java","-jar","docker-template.jar"]
-
 EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","app.jar"]
