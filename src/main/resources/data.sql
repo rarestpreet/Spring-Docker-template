@@ -1,0 +1,1 @@
+Insert into user_info (username) values ("efg"), ("abc"), ("opq"), ("lmn"), ("ijk");
